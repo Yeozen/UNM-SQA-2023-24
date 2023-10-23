@@ -1,3 +1,59 @@
 body {
     font-family: 'Cascadia Code', sans-serif;
 }
+
+h1 {
+    padding-left: 50px;
+}
+
+h1 .fa-youtube-play{
+    font-size: 34px;
+    color: red;
+}
+
+.searchDiv{
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
+}
+
+#search{
+    padding: 11px 25px;
+    font-size: 16px;
+    width: 200px;
+    background-color:#E8E8E8;
+    border: none;
+    border-left-style: solid;
+    border-width: 5px;
+    transition: width 0.4s ease-in-out;
+    line-height: 1;
+}
+
+#search:focus {
+    width: 350px;
+    outline: none;
+}
+
+#searchButton {
+    padding: 10px 25px;
+    color: #000000;
+    background-color:#E8E8E8;
+    border: none;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    line-height: 1;
+}
+
+#searchButton .fa-youtube-play {
+    font-size: 20px;
+    color: red;
+}
+
+#searchButton:hover {
+    background-color: gray;
+    color: white;
+}
+
+#searchButton:hover .fa-youtube-play {
+    color: white;
+}

@@ -19,8 +19,9 @@ function searchVideos() {
               const videoElement = document.createElement('div');
               videoElement.innerHTML = `
                   <h2>${videoTitle}</h2>
-                  <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                  <iframe width="1000" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
               `;
+              videoElement.style.marginBottom = '75px';
 
               searchResults.appendChild(videoElement);
           });

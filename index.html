@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Software Quality Assurance</title>
 
     <link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" >
+    <link href="index.css" rel="stylesheet" >
 </head>
 <body>
-    <h1>Video Player</h1>
-    <div>
-        <label for="search">Search:</label>
-        <input type="text" id="search" name="SearchBox" placeholder="Enter text...">
-        <button onclick="searchVideos()">Search</button>
-        <button onclick="initClient()">authorize and load</button>
-        <button onclick="execute()">execute</button>
-
+    <h1><i class="fa fa-youtube-play"></i> Video Player</h1>
+    <div class="searchDiv">
+        <label for="search"></label>
+        <input type="text" id="search" name="SearchBox" placeholder="Enter text..."><span class="searchSpan"></span>
+        <button id="searchButton" onclick="searchVideos()"><i class="fa fa-youtube-play"></i> Search</button>
     </div>
     <br>
     <div id="searchResults"></div>
