@@ -14,13 +14,14 @@
         <label for="search">Search:</label>
         <input type="text" id="search" name="SearchBox" placeholder="Enter text...">
         <button onclick="searchVideos()">Search</button>
-        <button onclick="authenticate().then(loadClient)">authorize and load</button>
+        <button onclick="initClient()">authorize and load</button>
         <button onclick="execute()">execute</button>
+
     </div>
     <br>
     <div id="searchResults"></div>
 
-    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
     <script src="index.js"></script>
 </body>
 </html>
