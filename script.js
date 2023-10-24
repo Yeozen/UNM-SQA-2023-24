@@ -64,7 +64,7 @@ fetch("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=
             videoThumbnail.classList.add("video-thumbnail");
 
             videoThumbnail.innerHTML = `
-                <div class="video-info col-sm-4">
+                <div class="video-info col-sm-11">
                     <h6 class="video-title">${video.snippet.title}</h6>
                     <img src="${video.snippet.thumbnails.high.url}" alt="${video.snippet.title}">
                     <span class="play-icon"><i class="fa fa-play"></i></span>
