@@ -10,8 +10,10 @@ myButton.addEventListener("click", function () {
     var type = "video";
     var maxResults = 12;
     var q = document.getElementById("searchBox").value;
+    var videoDuration = "short";
 
-    var url = relativeUrl + "?type=" + type + "&key=" + apiKey + "&maxResults=" + maxResults + "&q=" + q;
+    var url = relativeUrl + "?type=" + type + "&key=" + apiKey + "&maxResults=" + maxResults + "&q=" + q + "&videoDuration=" + videoDuration;
+
 
     // log response from the url after sending get request
     $.get(url, function (response) {
