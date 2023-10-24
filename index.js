@@ -11,20 +11,44 @@ function searchVideos() {
           const searchResults = document.getElementById('searchResults');
           searchResults.innerHTML = '';
 
-          data.items.forEach(item => {
-              const videoTitle = item.snippet.title;
-              const videoId = item.id.videoId;
-              const videoThumbnail = item.snippet.thumbnails.default.url;
+          for (let i = 0; i < data.items.length; i += 2){
+            const item1 = data.items[i];
+            const item2 = data.items[i+1];
+            
+            const videoTitle1 = item1.snippet.title;
+            const videoId1 = item1.id.videoId;
+            const videoThumbnail = item1.snippet.thumbnails.default.url;
 
-              const videoElement = document.createElement('div');
-              videoElement.innerHTML = `
-                  <h2>${videoTitle}</h2>
-                  <iframe width="1000" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-              `;
-              videoElement.style.marginBottom = '75px';
+            const videoTitle2 = item2.snippet.title;
+            const videoId2 = item2.id.videoId;
+            const videoThumbnai2 = item2.snippet.thumbnails.default.url;
 
-              searchResults.appendChild(videoElement);
-          });
+            const videoContainer = document.createElement('div');
+            videoContainer.style.marginBottom = '75px';
+            videoContainer.style.display = 'flex';
+
+            const videoElement1 = document.createElement('div');
+            videoElement1.style.paddingLeft = '5%';
+            videoElement1.style.flex = '50%';
+
+            const videoElement2 = document.createElement('div');
+            videoElement1.style.paddingLeft = '5%';
+            videoElement2.style.flex = '50%';
+
+            videoElement1.innerHTML = `
+                <h3>${videoTitle1}</h3>
+                <iframe width="80%" height="315" src="https://www.youtube.com/embed/${videoId1}" frameborder="0" allowfullscreen></iframe>
+            `;
+                
+            videoElement2.innerHTML = `
+                <h3>${videoTitle2}</h3>
+                <iframe width="80%" height="315" src="https://www.youtube.com/embed/${videoId2}" frameborder="0" allowfullscreen></iframe>
+            `;
+
+            videoContainer.appendChild(videoElement1);
+            videoContainer.appendChild(videoElement2);
+            searchResults.appendChild(videoContainer);
+          };
       })
       .catch(error => {
           console.error('Error:', error);
