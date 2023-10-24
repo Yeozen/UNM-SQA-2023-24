@@ -12,12 +12,14 @@ function searchByKeyword(keyword) {
     for (const video of videos) {
         if (video.snippet.title.toLowerCase().includes(searchKeyword.toLowerCase())) {
             const videoThumbnail = document.createElement("div");
-            videoThumbnail.classList.add("video-thumbnail");
+            videoThumbnail.classList.add("video-thumbnail","col-sm-4" );
 
             videoThumbnail.innerHTML = `
-                <h3 class="video-title">${video.snippet.title}</h3>
+            <div class="video-info col-sm-11">
+                <h4 class="video-title">${video.snippet.title}</h4>
                 <img src="${video.snippet.thumbnails.high.url}" alt="${video.snippet.title}">
                 <span class="play-icon"><i class="fa fa-play"></i></span>
+            </div>
             `;
 
             videoThumbnail.addEventListener("click", () => {
@@ -65,7 +67,7 @@ fetch("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=
 
             videoThumbnail.innerHTML = `
                 <div class="video-info col-sm-11">
-                    <h6 class="video-title">${video.snippet.title}</h6>
+                    <h4 class="video-title">${video.snippet.title}</h4>
                     <img src="${video.snippet.thumbnails.high.url}" alt="${video.snippet.title}">
                     <span class="play-icon"><i class="fa fa-play"></i></span>
                 </div>
