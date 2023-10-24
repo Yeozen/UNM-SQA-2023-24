@@ -50,7 +50,7 @@ document.getElementById("search-input").addEventListener("keydown", (event) => {
 // Initial fetch and display of videos
 let videos = [];
 
-fetch("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&q=Software%20Quality%20Assurance&type=video&videoDuration=short&key=AIzaSyA7ritPw8POAqCOEz_r10XSFzfLfT0mzvs")
+fetch("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=8&q=Software%20Quality%20Assurance&type=video&videoDuration=short&key=AIzaSyA7ritPw8POAqCOEz_r10XSFzfLfT0mzvs")
     .then((response) => {
         return response.json();
     })
@@ -61,7 +61,7 @@ fetch("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=
 
         for (const video of videos) {
             const videoThumbnail = document.createElement("div");
-            videoThumbnail.classList.add("video-thumbnail");
+            videoThumbnail.classList.add("video-thumbnail", "col-sm-4");
 
             videoThumbnail.innerHTML = `
                 <div class="video-info col-sm-11">
