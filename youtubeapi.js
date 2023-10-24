@@ -1,73 +1,44 @@
 // Set your YouTube Data API key
 var apiKey = "AIzaSyASw0iFX4bRcwz10Lmm12CdTgxF-NLzve4";
 
-// Function to load the YouTube Data API and set the API key
-function init() {
-    gapi.client.setApiKey(apiKey);
-    gapi.client.load("youtube", "v3", function() {
-      console.log("YouTube Data API loaded");
-    });
-  }
-  
-  // Wait for the Google API client library to load and then call init
-  gapi.load("client", init);
+var apiKey = "AIzaSyASw0iFX4bRcwz10Lmm12CdTgxF-NLzve4"; // Replace with your YouTube Data API key
+var maxResults = 12;
+var videoDuration = "short";
+var searchQuery = "car"; // Replace with your search query
 
-// Function to search YouTube
-function searchYouTube() {
-  var searchQuery = document.getElementById("searchQuery").value;
-  gapi.client.youtube.search.list({
-    "part": "snippet",
-    "q": searchQuery,
-    "maxResults": 12
-  }).then(function(response) {
-    var results = response.result.items;
-    displayResults(results);
-  }, function(err) {
-    console.error("Error searching YouTube", err);
-  });
-}
+fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${maxResults}&q=${searchQuery}&type=video&videoDuration=${videoDuration}&key=${apiKey}`)
+  .then(response => response.json())
+  .then(data => {
+    var videoListDiv = document.getElementById("videoList");
+    var videoPlayer = document.getElementById("videoPlayer");
 
-// Create a single video player element
-var playerContainer = document.getElementById("videoResults");
+    data.items.forEach(function(item) {
+      var title = item.snippet.title;
+      var videoId = item.id.videoId;
+      var videoThumbnail = item.snippet.thumbnails.medium.url;
 
-    function displayResults(results) {
-      var searchResultsDiv = document.getElementById("videoResults");
-
-      results.forEach(function(result) {
-        var title = result.snippet.title;
-        var videoId = result.id.videoId;
-        var videoThumbnail = result.snippet.thumbnails.medium.url;
-
-        var videoElement = document.createElement("div");
-        videoElement.className = "video-box";
-
-        videoElement.addEventListener("click", function() {
-          openVideoPlayer(videoId);
-        });
-
-        videoElement.innerHTML = `
-          <img src="${videoThumbnail}" alt="${title}">
-          <p>${title}</p>
-        `;
-        searchResultsDiv.appendChild(videoElement);
+      var videoElement = document.createElement("div");
+      videoElement.className = "video-box";
+      videoElement.addEventListener("click", function() {
+        videoPlayer.src = "https://www.youtube.com/embed/" + videoId;
       });
-    }
 
-    function openVideoPlayer(videoId) {
-      var modal = document.getElementById("videoModal");
-      var iframe = document.getElementById("videoPlayer");
+      var thumbnailImage = document.createElement("img");
+      thumbnailImage.src = videoThumbnail;
+      thumbnailImage.alt = title;
 
-      iframe.src = "https://www.youtube.com/embed/" + videoId;
-      modal.style.display = "block";
-    }
+      var titleParagraph = document.createElement("p");
+      titleParagraph.textContent = title;
 
-    function closeVideoPlayer() {
-      var modal = document.getElementById("videoModal");
-      var iframe = document.getElementById("videoPlayer");
+      videoElement.appendChild(thumbnailImage);
+      videoElement.appendChild(titleParagraph);
+      videoListDiv.appendChild(videoElement);
+    });
+  })
+  .catch(error => {
+    console.error("Error fetching data:", error);
+  });
 
-      iframe.src = "";
-      modal.style.display = "none";
-    }
   
   
   
