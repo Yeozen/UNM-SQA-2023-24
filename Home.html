@@ -5,10 +5,12 @@
         <title>Youtube</title>
         <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">   
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">  
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
         <script type="text/javascript" src="script.js"></script>
+        
         <style>
-            #video-popup {
+#video-popup {
     display: none;
     position: fixed;
     top: 0;
@@ -18,23 +20,40 @@
     background: rgba(0, 0, 0, 0.7);
     z-index: 9999;
 }
+.img-thumbnail{
+    padding: 0px;
+}
 
-#video-popup-content {
+#video-popup .modal-dialog {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+#video-popup .modal-content {
     background: #fff;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-#close-popup {
+#video-popup .modal-header {
     position: absolute;
     top: 5px;
     right: 5px;
     cursor: pointer;
+}
+
+#video-popup .modal-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#video-popup .embed-responsive {
+    max-width: 800px;
+    max-height: 450px;
 }
 
 .video-thumbnail {
@@ -44,46 +63,176 @@
     margin: 10px 0;
 }
 
-.play-icon {
+
+.video-info {
+    text-align: center; /* Center align the content horizontally */
+}
+
+.video-info .embed-responsive {
+    position: relative; /* Required for absolute positioning of the play button */
+}
+
+.video-info .play-icon {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: red;
-    font-size: 40px;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Center both vertically and horizontally */
+    cursor: pointer;
 }
 
-.video-title{
+.video-title {
     font-size: 17px;
+    margin-top: 10px; /* Add some space between the image and title */
+}
+.slider-tabs {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+    cursor: grab;
 }
 
+.slider-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    background-color: #eee;
+    user-select: none;
+}
+
+.slider-tab.selected {
+    background-color: #007bff;
+    color: #fff;
+    cursor: default;
+}
+
+.wrapper {
+  position: relative;
+  overflow-x: hidden;
+  background: #fff;
+  border-radius: 13px;
+}
+.wrapper .icon {
+  position: absolute;
+  top: -4px;
+  height: 100%;
+  width: 120px;
+  display: flex;
+  align-items: center;
+}
+.icon:first-child {
+  left: 0;
+  display: none;
+  background: linear-gradient(90deg, #fff 70%, transparent);
+}
+.icon:last-child {
+  right: 0;
+  justify-content: flex-end;
+  background: linear-gradient(-90deg, #fff 70%, transparent);
+}
+.icon i {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 38px;
+  border-radius: 50%;
+}
+.icon i:hover {
+  background: #efedfb;
+}
+.icon:first-child i {
+  margin-left: 15px;
+} 
+.icon:last-child i {
+  margin-right: 15px;
+} 
+.wrapper .tabs-box {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+.tabs-box.dragging {
+  scroll-behavior: auto;
+  cursor: grab;
+}
+.tabs-box .tab {
+  cursor: pointer;
+  font-size: 1rem;
+  white-space: nowrap;
+  background: #f5f4fd;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: 1px solid #d8d5f2;
+}
+.tabs-box .tab:hover{
+  background: #efedfb;
+}
+.tabs-box.dragging .tab {
+  user-select: none;
+  pointer-events: none;
+}
+.tabs-box .tab.active{
+  color: #fff;
+  background: #5372F0;
+  border-color: transparent;
+}
         </style>
     </head>
     <body>
-        <div class="search-container">
-            <h1>Software Quality Assurance Videos</h1>
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search for videos">
-                <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
-        </div>
-        
-        <div class="container-fluid youtube-container">
+        <div class="container">
+            <div class="search-container text-center">
+                <h1 class="mb-4">Software Quality Assurance Videos</h1>
+                <div class="search-bar input-group mb-4">
+                    <input type="text" id="search-input" class="form-control" placeholder="Search for videos">
+                    <button id="search-button" class="btn btn-primary" onclick="searchByKeyword()"><i class="fa-solid fa-magnifying-glass"></i> Search</button> 
+                </div>
 
+                <div class="wrapper">
+                    <div class="icon"><i id="left" class="fa-solid fa-angle-left"></i></div>
+                    <ul class="tabs-box">
+                      <li class="tab">Coding</li>
+                      <li class="tab active">JavaScript</li>
+                      <li class="tab">Podcasts</li>
+                      <li class="tab">Databases</li>
+                      <li class="tab">Web Development</li>
+                      <li class="tab">Unboxing</li>
+                      <li class="tab">History</li>
+                      <li class="tab">Programming</li>
+                      <li class="tab">Gadgets</li>
+                      <li class="tab">Algorithms</li>
+                      <li class="tab">Comedy</li>
+                      <li class="tab">Gaming</li>
+                      <li class="tab">Share Market</li>
+                      <li class="tab">Smartphones</li>
+                      <li class="tab">Data Structure</li>
+                    </ul>
+                    <div class="icon"><i id="right" class="fa-solid fa-angle-right"></i></div>
+                  </div>
+                  
+            </div>
+    
+            <div class="row youtube-container"></div>
         </div>
-        
+    
         <!-- The iframe for video pop-up -->
         <div id="video-popup">
-            <div id="video-popup-content">
-                <span id="close-popup"><i class="fa-solid fa-times"></i></span>
-                <iframe id="video-iframe" width="620" height="415" src="" frameborder="0" allowfullscreen ></iframe>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span id="close-popup" class="close" onclick="hideVideoPopup()"><i class="fa fa-times"></i></span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe id="video-iframe" class="embed-responsive-item" src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        
+    
     </body>
 </html>
-
-
-
-
-
