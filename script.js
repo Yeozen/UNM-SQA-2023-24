@@ -1,62 +1,101 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const tabsBox = document.querySelector(".tabs-box"),
-    allTabs = tabsBox.querySelectorAll(".tab"),
-    arrowIcons = document.querySelectorAll(".icon i");
+document.addEventListener("DOMContentLoaded", function () {
+    const tabsBox = document.querySelector(".tabs-box");
+    const allTabs = tabsBox.querySelectorAll(".tab");
+    const arrowIcons = document.querySelectorAll(".icon i");
     let isDragging = false;
 
     const handleIcons = (scrollVal) => {
         let maxScrollableWidth = tabsBox.scrollWidth - tabsBox.clientWidth;
         arrowIcons[0].parentElement.style.display = scrollVal <= 0 ? "none" : "flex";
-        arrowIcons[1].parentElement.style.display = maxScrollableWidth - scrollVal <= 1 ? "none" : "flex";
-    }
+        arrowIcons[1].parentElement.style.display =
+            maxScrollableWidth - scrollVal <= 1 ? "none" : "flex";
+    };
 
-    arrowIcons.forEach(icon => {
+    arrowIcons.forEach((icon) => {
         icon.addEventListener("click", () => {
-            // if clicked icon is left, reduce 350 from tabsBox scrollLeft else add
-            let scrollWidth = tabsBox.scrollLeft += icon.id === "left" ? -340 : 340;
+            let scrollWidth =
+                (tabsBox.scrollLeft += icon.id === "left" ? -340 : 340);
             handleIcons(scrollWidth);
         });
     });
 
-    allTabs.forEach(tab => {
+    allTabs.forEach((tab) => {
         tab.addEventListener("click", () => {
-            tabsBox.querySelector(".active").classList.remove("active");
-            tab.classList.add("active");
+            if (!tab.classList.contains("add-tab")) {
+                tab.classList.toggle("active");
+                
+            }
         });
     });
 
+    // Function to add a new tab
+    const addTab = () => {
+        const newTabName = prompt("Enter the name for the new tab:");
+        if (newTabName !== null && newTabName.trim() !== "") {
+            const newTab = document.createElement("li");
+            newTab.classList.add("tab", "active");
+            newTab.textContent = newTabName;
+            tabsBox.insertBefore(newTab, addTabBtn);
+            
+
+            // Toggle activation on new tab click
+            newTab.addEventListener("click", () => {
+                newTab.classList.toggle("active");
+                
+            });
+        }
+    };
+
+    // Handle click on the "fa fa-plus" icon
+    const addTabBtn = document.getElementById("addTabBtn");
+    addTabBtn.addEventListener("click", addTab);
+
+    // Function to update the search input value based on active tabs
+    const updateSearchInputValue = () => {
+        const activeTabs = Array.from(tabsBox.querySelectorAll(".tab.active"));
+        const searchInput = document.getElementById("search-input");
+        searchInput.value = activeTabs.map((tab) => tab.textContent.trim()).join(", ");
+    };
+
     const dragging = (e) => {
-        if(!isDragging) return;
+        if (!isDragging) return;
         tabsBox.classList.add("dragging");
         tabsBox.scrollLeft -= e.movementX;
-        handleIcons(tabsBox.scrollLeft)
-    }
+        handleIcons(tabsBox.scrollLeft);
+    };
 
     const dragStop = () => {
         isDragging = false;
         tabsBox.classList.remove("dragging");
-    }
+    };
 
-    tabsBox.addEventListener("mousedown", () => isDragging = true);
+    tabsBox.addEventListener("mousedown", () => (isDragging = true));
     tabsBox.addEventListener("mousemove", dragging);
     document.addEventListener("mouseup", dragStop);
 });
 
-// Rest of your JavaScript code...
 
 // Function to search for videos by keyword
 function searchByKeyword() {
+    const activeTabs = Array.from(document.querySelectorAll(".tab.active"));
+    const activeTabNames = activeTabs.map((tab) => tab.textContent.trim()).join(' ');
+
     const searchInput = document.getElementById("search-input");
     const searchQuery = searchInput.value.trim();
 
-    if (searchQuery === "") {
-        alert("Please enter a search keyword.");
+    if (searchQuery === "" && activeTabNames === "") {
+        alert("Please enter a search keyword or select a tab.");
         return;
     }
 
-    const apiKey = "AIzaSyBxcRR50UNLjvb2vV0pRiw8kR6PoaYYWQw"; 
-    const maxResults = 8; 
-    const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&videoDuration=short&maxResults=${maxResults}&q=${searchQuery}`;
+    // Combine the search query and tab names with a space
+    const combinedSearch = `${searchQuery} ${activeTabNames}`.trim();
+
+    const apiKey = "AIzaSyBxcRR50UNLjvb2vV0pRiw8kR6PoaYYWQw";
+    const maxResults = 8;
+    const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&videoDuration=short&maxResults=${maxResults}&q=${combinedSearch}`;
+
+    console.log(apiUrl);
 
     // Make a GET request to the YouTube Data API
     fetch(apiUrl)
