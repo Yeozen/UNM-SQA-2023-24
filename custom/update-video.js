@@ -79,7 +79,7 @@ function initializePlyr(playerID) {
             let time = players[playerID].currentTime.toFixed(0);
             $('#video-timestamp-' + playerID).html(convertSecondsToTimestamp(time));
             $('#video-timestamp-' + playerID).trigger('change');
-        }, 1000);
+        }, 500);
     });
 
     players[playerID].on('pause', event => {
@@ -89,6 +89,7 @@ function initializePlyr(playerID) {
     });
 
     refreshDropdown(playerID);
+    showAllNoteContent(videoIDs[playerID], playerID);
 }
 
 function convertSecondsToTimestamp(seconds) {
@@ -224,3 +225,21 @@ function shareNote(key, note_key) {
         console.error('Async: Could not copy text: ', err);
     });
 }
+
+
+//show all of the note content in the local storage when the page is loaded
+function showAllNoteContent(video_id, key) {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        let note_key = localStorage.key(i);
+        if (note_key.includes(video_id)) {
+            let note_content = localStorage.getItem(note_key);
+            let note_timestamp = convertSecondsToTimestamp(note_key.split("___")[1]);
+
+            let dt = '<dt class="col-3">' + note_timestamp + '</dt>';
+            let dd = '<dd class="col-9">' + note_content + '</dd>';
+            $('#description-list-' + key).append(dt + dd);
+        }
+
+    }
+}
+
