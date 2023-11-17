@@ -1,12 +1,21 @@
+
+// Keep track of whether notes have been displayed for each video
+const notesDisplayed = new Array(12).fill(false);
+
+
 for (let i = 0; i < 12; i++) {
     //save note
     $('#saveNoteButton' + i).on('click', function () {
         let videoID = videoIDs[i];
-
         let time = convertTimeStampToSeconds(getVideoTimestamp(i));
         let note_key = generateNoteKey(videoID, time);
-
         saveNote(i, note_key);
+
+        // Display notes only if not displayed before
+        if (!notesDisplayed[i]) {
+            showAllNoteContent(videoIDs[i], i);
+            notesDisplayed[i] = true;
+        }
 
         refreshDropdown(i);
     });
@@ -36,13 +45,12 @@ for (let i = 0; i < 12; i++) {
 
     $('#shareNoteButton-' + i).on('click', function () {
         let videoID = videoIDs[i];
-
         let time = convertTimeStampToSeconds(getVideoTimestamp(i));
         let note_key = generateNoteKey(videoID, time);
-
         shareNote(i, note_key);
     });
 
+    // ... (other event handlers)
 }
 
 function defaultVideo() {
@@ -86,6 +94,31 @@ function initializePlyr(playerID) {
         // stop the interval
         console.log("pause")
         clearInterval(intervals[playerID]);
+    });
+
+    // Add event listener for timeupdate event
+    players[playerID].on('timeupdate', event => {
+        let currentTime = players[playerID].currentTime.toFixed(0);
+        let timestamp = convertSecondsToTimestamp(currentTime);
+        let descriptionList = $('#description-list-' + playerID);
+        let notes = descriptionList.find('dt');
+        let noteDropdown = $('#note-dropdown-' + playerID);
+        let noteContent = $('#note-content-' + playerID);
+
+        for (let i = 0; i < notes.length; i++) {
+            let noteTimestamp = $(notes[i]).html();
+            let noteContent = $(notes[i]).next();
+            $(notes[i]).css('height', '90%'); // Add height style rule
+            if (noteTimestamp === timestamp) {
+                $(notes[i]).css('background-color', '#ffffcc');
+                noteDropdown.find('option[value="' + currentTime + '"]').prop('selected', true);
+                noteContent.css('background-color', '#ffffcc');
+            } else {
+                $(notes[i]).css('background-color', 'transparent');
+                noteDropdown.find('option[value="' + currentTime + '"]').prop('selected', false);
+                noteContent.css('background-color', 'transparent');
+            }
+        }
     });
 
     refreshDropdown(playerID);
@@ -158,7 +191,23 @@ function convertTimeStampToSeconds(timestamp) {
 function saveNote(key, note_key) {
     let note_content = $('#note-content-' + key).val();
     console.log("Note content: " + note_content);
-    localStorage.setItem(note_key, note_content);
+
+    // Check if the new note content is empty
+    if (note_content.trim() === "") {
+        // If it's empty, remove the existing note
+        localStorage.removeItem(note_key);
+    } else {
+        // If it's not empty, save the new note
+        localStorage.setItem(note_key, note_content);
+    }
+
+    // Clear existing notes before displaying new ones
+    $('#description-list-' + key).empty();
+
+    // Display all notes
+    showAllNoteContent(videoIDs[key], key);
+
+    refreshDropdown(key);
 }
 
 function refreshDropdown(key) {
@@ -227,8 +276,10 @@ function shareNote(key, note_key) {
 }
 
 
-//show all of the note content in the local storage when the page is loaded
 function showAllNoteContent(video_id, key) {
+    // Clear existing notes before displaying new ones
+    $('#description-list-' + key).empty();
+
     for (let i = localStorage.length - 1; i >= 0; i--) {
         let note_key = localStorage.key(i);
         if (note_key.includes(video_id)) {
@@ -239,7 +290,35 @@ function showAllNoteContent(video_id, key) {
             let dd = '<dd class="col-9">' + note_content + '</dd>';
             $('#description-list-' + key).append(dt + dd);
         }
-
     }
 }
 
+
+for (let i = 0; i < 12; i++) {
+    $('#clearallNoteButton-' + i).on('click', function () {
+        // Prompt the user for confirmation
+        const userConfirmed = window.confirm("Are you sure you want to clear all notes for this video?");
+
+        if (userConfirmed) {
+            clearAllNotes(i);
+        }
+    });
+}
+
+
+function clearAllNotes(index) {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        let key = localStorage.key(i);
+        if (key.includes(`___${index}`)) {
+            localStorage.removeItem(key);
+        }
+    }
+
+    // Clear the notes displayed on the page
+    $(`#description-list-${index}`).empty();
+
+    // Clear the entire local storage
+    localStorage.clear();
+
+    refreshDropdown(index);
+}
