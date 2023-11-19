@@ -2875,6 +2875,27 @@ fieldset:disabled .btn {
   font-size: 0.9rem;
   border-radius: 0.358rem; }
 
+.clear {
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.clear:hover {
+  background-color: darkblue;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .clear {
+    width: 100%;
+  }
+}
 .fade {
   transition: opacity 0.15s linear; }
 
