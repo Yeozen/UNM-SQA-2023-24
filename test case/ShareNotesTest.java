@@ -42,7 +42,8 @@ public class ShareNotesTest {
     }
 
     @Test
-    public void testShareNotes() throws UnsupportedFlavorException, IOException {
+    public void testShareNotes() throws UnsupportedFlavorException, IOException, InterruptedException {
+
         // Step 1: Verify that notes are present in the “Full Notes” section with corresponding timestamps.
         WebElement fullNotesList = driver.findElement(By.id("description-list-0"));
         List<WebElement> notes = fullNotesList.findElements(By.tagName("dt"));
@@ -55,14 +56,16 @@ public class ShareNotesTest {
         // Step 3: Click on the Share button.
         shareButton.click();
 
+        TimeUnit.SECONDS.sleep(2);
         // Step 4: Copy the contents of the clipboard.
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         String sharedContent = (String) clipboard.getData(DataFlavor.stringFlavor);
 
         // Step 5: Verify the format and content of the shared notes.
-        Assert.assertTrue(sharedContent.startsWith("Video URL : "));
+        Assert.assertTrue(sharedContent.startsWith("Video URL : https://www.youtube.com/watch?v="));
         Assert.assertTrue(sharedContent.contains("Note Content :"));
         Assert.assertTrue(sharedContent.contains("JUNIT TEST NOTE"));
+        
     }
 
     @After
