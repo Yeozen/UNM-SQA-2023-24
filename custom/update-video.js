@@ -261,21 +261,29 @@ function searchVideo() {
     });
 }
 
-// share note in clipboard with video url
+// share all notes of that video in clipboard with video url
 function shareNote(key, note_key) {
     let note_content = $('#note-content-' + key).val();
     let video_url = "https://www.youtube.com/watch?v=" + videoIDs[key];
     let note_url = video_url + "&note=" + note_key;
     let note_timestamp = convertSecondsToTimestamp(note_key.split("___")[1]);
 
-    navigator.clipboard.writeText("Video URL : " + note_url + "\n\n" + "Note Content : " + note_timestamp + " " + note_content).then(function () {
+    let notes = "";
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        let note_key = localStorage.key(i);
+        if (note_key.includes(videoIDs[key])) {
+            let note_content = localStorage.getItem(note_key);
+            let note_timestamp = convertSecondsToTimestamp(note_key.split("___")[1]);
+            notes += note_timestamp + " " + note_content + "\n";
+        }
+    }
+
+    navigator.clipboard.writeText("Video URL : " + note_url + "\n\n" + "Notes : " + "\n" + notes).then(function () {
         console.log('Async: Copying to clipboard was successful!');
     }, function (err) {
         console.error('Async: Could not copy text: ', err);
     });
 }
-
-
 function showAllNoteContent(video_id, key) {
     // Clear existing notes before displaying new ones
     $('#description-list-' + key).empty();
