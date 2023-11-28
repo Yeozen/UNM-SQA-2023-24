@@ -1,0 +1,7 @@
+services:
+  - name: web
+    buildCommand: ""
+    startCommand: "npx serve -s"
+    env:
+      - key: SERVE_STATIC
+        value: "true"
